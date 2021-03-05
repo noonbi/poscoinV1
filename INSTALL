@@ -1,0 +1,9 @@
+Building Poscoin
+
+See doc/readme-qt.rst for instructions on building Poscoin-Qt,
+the intended-for-end-users, nice-graphical-interface, reference
+implementation of Poscoin.
+
+See doc/build-*.txt for instructions on building poscoind,
+the intended-for-services, no-graphical-interface, reference
+implementation of Poscoin.
