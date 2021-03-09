@@ -7,6 +7,7 @@ CoinControlTreeWidget::CoinControlTreeWidget(QWidget *parent) :
 
 }
 
+
 void CoinControlTreeWidget::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_Space) // press spacebar -> select checkbox
