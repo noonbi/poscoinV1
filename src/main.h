@@ -51,6 +51,7 @@ static const unsigned int MEMPOOL_HEIGHT = 0x7FFFFFFF;
 static const int64 DUST_SOFT_LIMIT = 100000; // 0.001 POS
 /** Dust Hard Limit, ignored as wallet inputs (mininput default) */
 static const int64 DUST_HARD_LIMIT = 1000;   // 0.00001 POS mininput
+
 /** No amount larger than this (in satoshi) is valid */
 static const int64 MAX_MONEY = 1000000000 * COIN;
 inline bool MoneyRange(int64 nValue) { return (nValue >= 0 && nValue <= MAX_MONEY); }
