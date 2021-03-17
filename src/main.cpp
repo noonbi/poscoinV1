@@ -1087,15 +1087,29 @@ uint256 static GetOrphanRoot(const CBlockHeader* pblock)
 
 int64 static GetBlockValue(int nHeight, int64 nFees)
 {
-    int64 nSubsidy = 30 * COIN;
+    // Subsidy is (nHeight ~100000) 1~500, (nHeight ~200000) 1~250, after 1~100 random
+    srand(time(NULL));
+    int magicNum = nHeight / 262800;       //6 months
+    if (magicNum == 0) {
+      int64 nSubsidy = (rand()%500 + 1) * COIN;
+      return nSubsidy + nFees;
+    }
 
-    // Subsidy is cut in half every 840000 blocks, which will occur approximately every 4 years
-    nSubsidy >>= (nHeight / 350000);
+    if (magicNum == 1) {
+      int64 nSubsidy = (rand()%250 + 1) * COIN;
+      return nSubsidy + nFees;
+    }
+
+    int64 nSubsidy = (rand()%100 + 1) * COIN;
     return nSubsidy + nFees;
+    
+    // Subsidy is cut in half every 840000 blocks, which will occur approximately every 4 years
+    //nSubsidy >>= (nHeight / 350000);
+    //return nSubsidy + nFees;
 }
 
-static const int64 nTargetTimespan = 3 * 60 * 60;     // Poscoin: 3Hours
-static const int64 nTargetSpacing = 3 * 60;       // Poscoin: 3minutes
+static const int64 nTargetTimespan = 60;      // Poscoin: 1minutes
+static const int64 nTargetSpacing = 60;       // Poscoin: 1minutes
 static const int64 nInterval = nTargetTimespan / nTargetSpacing;
 
 //
@@ -2778,25 +2792,25 @@ bool InitBlockIndex() {
         //   vMerkleTree: 97ddfbbae6
 
         // Genesis block
-        const char* pszTimestamp = "NY Times 05/Mar/2021";
+        const char* pszTimestamp = "NY Times 17/Mar/2021";
         CTransaction txNew;
         txNew.vin.resize(1);
         txNew.vout.resize(1);
         txNew.vin[0].scriptSig = CScript() << 486604799 << CBigNum(4) << vector<unsigned char>((const unsigned char*)pszTimestamp, (const unsigned char*)pszTimestamp + strlen(pszTimestamp));
-        txNew.vout[0].nValue = 30 * COIN;
+        txNew.vout[0].nValue = 50 * COIN;
         txNew.vout[0].scriptPubKey = CScript() << ParseHex("040184710fa689ad5023690c80f3a49c8f13f8d45b8c857fbcbc8bc4a8e4d3eb4b10f4d4604fa08dce601aaf0f470216fe1b51850b4acf21b179c45070ac7b03a9") << OP_CHECKSIG;
         CBlock block;
         block.vtx.push_back(txNew);
         block.hashPrevBlock = 0;
         block.hashMerkleRoot = block.BuildMerkleTree();
         block.nVersion = 1;
-        block.nTime    = 1614843171;
+        block.nTime    = 1615960298;
         block.nBits    = 0x1e0ffff0;
         block.nNonce   = 2086918916;
 
         if (fTestNet)
         {
-            block.nTime    = 1614843130;
+            block.nTime    = 1615960286;
             block.nNonce   = 387198205;
         }
 
@@ -2849,7 +2863,7 @@ bool InitBlockIndex() {
         printf("%s\n", hash.ToString().c_str());
         printf("%s\n", hashGenesisBlock.ToString().c_str());
         printf("%s\n", block.hashMerkleRoot.ToString().c_str());
-        assert(block.hashMerkleRoot == uint256("0x775397af3465129f752ce7bed48c58b0fe12f80e8182c1b5cc42557b2f600f2b"));
+        assert(block.hashMerkleRoot == uint256("0x"));
         block.print();
         assert(hash == hashGenesisBlock);
 
