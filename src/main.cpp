@@ -1087,28 +1087,14 @@ uint256 static GetOrphanRoot(const CBlockHeader* pblock)
 
 int64 static GetBlockValue(int nHeight, int64 nFees)
 {
-    // Subsidy is (nHeight ~100000) 1~500, (nHeight ~200000) 1~250, after 1~100 random
-    srand(time(NULL));
-    int magicNum = nHeight / 262800;       //6 months
-    if (magicNum == 0) {
-      int64 nSubsidy = (rand()%500 + 1) * COIN;
-      return nSubsidy + nFees;
-    }
-
-    if (magicNum == 1) {
-      int64 nSubsidy = (rand()%250 + 1) * COIN;
-      return nSubsidy + nFees;
-    }
-
-    int64 nSubsidy = (rand()%100 + 1) * COIN;
+    // Subsidy is cut in half every 250000 blocks, which will occur approximately every 6 months
+    int64 nSubsidy = 500 * COIN;
+    nSubsidy >>= (nHeight / 250000);
+    if (nSubsidy < 10) nSubsidy = 10;
     return nSubsidy + nFees;
-    
-    // Subsidy is cut in half every 840000 blocks, which will occur approximately every 4 years
-    //nSubsidy >>= (nHeight / 350000);
-    //return nSubsidy + nFees;
 }
 
-static const int64 nTargetTimespan = 60 * 60;      // Poscoin: 1hour
+static const int64 nTargetTimespan = 60 * 60; // Poscoin: 1hour
 static const int64 nTargetSpacing = 60;       // Poscoin: 1minutes
 static const int64 nInterval = nTargetTimespan / nTargetSpacing;
 
@@ -2797,7 +2783,7 @@ bool InitBlockIndex() {
         txNew.vin.resize(1);
         txNew.vout.resize(1);
         txNew.vin[0].scriptSig = CScript() << 486604799 << CBigNum(4) << vector<unsigned char>((const unsigned char*)pszTimestamp, (const unsigned char*)pszTimestamp + strlen(pszTimestamp));
-        txNew.vout[0].nValue = 50 * COIN;
+        txNew.vout[0].nValue = 500 * COIN;
         txNew.vout[0].scriptPubKey = CScript() << ParseHex("040184710fa689ad5023690c80f3a49c8f13f8d45b8c857fbcbc8bc4a8e4d3eb4b10f4d4604fa08dce601aaf0f470216fe1b51850b4acf21b179c45070ac7b03a9") << OP_CHECKSIG;
         CBlock block;
         block.vtx.push_back(txNew);
