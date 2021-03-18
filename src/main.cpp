@@ -1108,7 +1108,7 @@ int64 static GetBlockValue(int nHeight, int64 nFees)
     //return nSubsidy + nFees;
 }
 
-static const int64 nTargetTimespan = 60;      // Poscoin: 1minutes
+static const int64 nTargetTimespan = 60 * 60;      // Poscoin: 1hour
 static const int64 nTargetSpacing = 60;       // Poscoin: 1minutes
 static const int64 nInterval = nTargetTimespan / nTargetSpacing;
 
